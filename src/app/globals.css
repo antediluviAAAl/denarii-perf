@@ -1,0 +1,1679 @@
+/* src/app/globals.css */
+
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+   :root {
+    /* Brand Colors */
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #7c3aed;
+    --brand-gold: #d97706;
+  
+    /* Backgrounds */
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+  
+    /* Typography */
+    --text: #1f2937;
+    --text-light: #6b7280;
+  
+    /* Borders & Shadows */
+    --border: #e5e7eb;
+    --border-light: #f1f5f9;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+    /* UI Dimensions */
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+  
+    /* Ownership Theme */
+    --owned-green: #10b981;
+    --owned-green-light: #d1fae5;
+    --owned-green-dark: #065f46;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    /* CHANGED: Default to Montserrat for everything else */
+    font-family: var(--font-montserrat), sans-serif;
+    background: var(--light-bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  
+  /* FIX: Ensure inputs/buttons inherit font by default (overridden below for specific inputs) */
+  input,
+  button,
+  select,
+  textarea {
+    font-family: inherit;
+  }
+  
+  /* --- UTILITIES --- */
+  .text-gold {
+    color: var(--brand-gold) !important;
+  }
+  .relative {
+    position: relative;
+  }
+  .object-cover {
+    object-fit: cover;
+  }
+  .inline-icon {
+    vertical-align: text-bottom;
+    margin-right: 4px;
+  }
+  
+  /* =========================================
+             2. LAYOUT & HEADER
+             ========================================= */
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .app-header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+  }
+  
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .app-title {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    /* Font: Cinzel (Header Title) */
+    font-family: var(--font-cinzel), serif;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .title-denarii {
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--brand-gold);
+  }
+  .title-district {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #111827;
+  }
+  
+  .app-icon {
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+  
+  .app-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    /* Font: Cinzel (Subtitle including stats) */
+    font-family: var(--font-cinzel), serif;
+    font-weight: 600;
+    flex-wrap: wrap;
+  }
+  
+  .owned-count {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--owned-green-light);
+    color: var(--owned-green-dark);
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    /* Inherits Cinzel from app-subtitle */
+    font-family: inherit;
+  }
+  
+  .owned-count svg {
+    color: var(--owned-green);
+  }
+  
+  .header-stats {
+    display: flex;
+    gap: 1rem;
+    /* Ensure items stretch to fill height */
+    align-items: stretch; 
+  }
+  
+  /* Standard Stat Badge */
+  .stat-badge {
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+  }
+  
+  /* NEW: Unified Header Action Button (Add Coin, Sign In, Sign Out) */
+  .header-action-btn {
+    background: #fffbeb;
+    border: 1px solid var(--brand-gold);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 120px; /* Fixed width for consistency */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: auto; /* Let flexbox stretch it */
+    text-decoration: none; /* Crucial for Link tag */
+    color: var(--text); /* Ensure link text color doesn't default to blue */
+    font: inherit; /* Ensure font matches button defaults */
+  }
+  
+  .header-action-btn:hover {
+    background: #fef3c7;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    /* Font: Cinzel (Header Stat Labels) - Matching subtitle style */
+    font-family: var(--font-cinzel), serif;
+  }
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--brand-gold);
+    /* Font: Cinzel (Header Stat Values) */
+    font-family: var(--font-cinzel), serif;
+  }
+  
+  /* Special font size for the button text */
+  .header-action-btn .stat-value {
+    font-size: 0.9rem;
+  }
+  
+  /* =========================================
+             3. CONTROLS (SEARCH & FILTERS)
+             ========================================= */
+  .controls-container {
+    max-width: 1400px;
+    margin: 0 auto 2rem;
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+  .filter-input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+  }
+  .filter-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    min-height: 46px;
+  }
+  
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0;
+  }
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-input {
+    width: 100%;
+    padding: 0.625rem 3rem 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    transition: all 0.2s;
+    /* Font: Cinzel (Search Placeholder & Value) */
+    font-family: var(--font-cinzel), serif;
+    font-weight: 500;
+  }
+  .search-input::placeholder {
+    /* Ensure placeholder uses Cinzel */
+    font-family: var(--font-cinzel), serif;
+    opacity: 0.7;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+  .clear-search {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .filter-group {
+    flex: 1;
+    min-width: 160px;
+  }
+  .filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    /* Font: Cinzel (Filter Titles like "Country") */
+    font-family: var(--font-cinzel), serif;
+  }
+  .filter-label svg {
+    color: var(--brand-gold);
+    filter: drop-shadow(0 1px 1px rgba(217, 119, 6, 0.2));
+    transition: color 0.2s ease;
+  }
+  .filter-group:hover .filter-label svg {
+    color: #b45309;
+  }
+  .filter-select {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    /* Font: Cinzel (Dropdown Values) */
+    font-family: var(--font-cinzel), serif;
+    font-weight: 500;
+  }
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+  .filter-select:disabled {
+    background: var(--border-light);
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .active-filters-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    flex: 1;
+    background-color: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    padding: 0 1rem;
+    height: 46px;
+    overflow: hidden;
+    /* Font: Cinzel (Active Filter Bar Container) */
+    font-family: var(--font-cinzel), serif;
+  }
+  .active-filters-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border-light);
+    flex-shrink: 0;
+    height: 100%;
+    /* Font: Cinzel (Active Filter Label) */
+    font-family: var(--font-cinzel), serif;
+  }
+  .filter-tags-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    height: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .filter-tags-list::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 20px;
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    /* Font: Cinzel (Active Filter Values) */
+    font-family: var(--font-cinzel), serif;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .filter-tag:hover {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+    color: var(--primary-dark);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+  }
+  .clear-all-tags {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 0.25rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .clear-all-tags:hover {
+    color: #ef4444;
+  }
+  
+  .view-toggles {
+    display: flex;
+    gap: 4px;
+    background: white;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    height: 46px;
+    align-items: center;
+  }
+  .toggle-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: #64748b;
+    transition: all 0.2s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toggle-btn.active {
+    background: #f1f5f9;
+    color: var(--brand-gold);
+    font-weight: bold;
+  }
+  .toggle-btn:hover {
+    background: #f1f5f9;
+  }
+  
+  /* =========================================
+             4. MAIN CONTENT AREA
+             ========================================= */
+  .main-content {
+    flex: 1;
+    max-width: 1400px;
+    margin: 0 auto 3rem;
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-light);
+  }
+  .loading-spinner {
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    width: 3rem;
+    height: 3rem;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+  .no-results p {
+    color: var(--text-light);
+    font-size: 0.875rem;
+  }
+  
+  /* =========================================
+             5. CATEGORIES & GRID
+             ========================================= */
+  .categories-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .category-section {
+    border-radius: var(--radius);
+    border: 1px solid;
+    overflow: hidden;
+    transition: all 0.3s;
+    box-shadow: var(--shadow);
+  }
+  .category-header {
+    padding: 0 1.5rem;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+    border-bottom: 1px solid;
+    /* Font: Cinzel (Category Header) */
+    font-family: var(--font-cinzel), serif;
+  }
+  .category-header:hover {
+    filter: brightness(0.98);
+  }
+  .category-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .category-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .category-count {
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    color: inherit;
+    /* Inherit Cinzel from Header */
+    font-family: var(--font-cinzel), serif;
+  }
+  .owned-in-category {
+    color: var(--owned-green-dark);
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+  .category-toggle {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .category-content {
+    padding: 1.5rem;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+  }
+  .coin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* =========================================
+             6. COIN CARD (3D FLIP & BADGES)
+             ========================================= */
+  .coin-card {
+    background-color: transparent;
+    perspective: 1000px;
+    cursor: default;
+    min-height: 350px;
+    position: relative;
+  }
+  .card-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .coin-card:hover .card-flipper {
+    transform: rotateY(180deg);
+  }
+  .card-front,
+  .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: white;
+  }
+  .card-front {
+    z-index: 2;
+    transform: rotateY(0deg);
+    display: flex;
+    flex-direction: column;
+  }
+  .coin-card.owned-coin .card-front {
+    border-color: var(--owned-green);
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  }
+  .coin-card:hover .card-front {
+    box-shadow: var(--shadow-lg);
+  }
+  .coin-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .coin-image-container {
+    height: 220px;
+    background: var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .coin-card.owned-coin .coin-image-container {
+    background: rgba(16, 185, 129, 0.05);
+  }
+  .coin-image-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+  .coin-details {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .coin-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+  }
+  .coin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .coin-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+  .coin-info-item svg {
+    color: var(--brand-gold);
+  }
+  .coin-subject {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-light);
+  }
+  .card-back {
+    transform: rotateY(180deg);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    border-color: var(--primary);
+    padding: 0;
+    height: 100%;
+  }
+  .coin-card.owned-coin .card-back {
+    border-color: var(--owned-green);
+  }
+  .back-content-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--border-light);
+    overflow: hidden;
+  }
+  .no-reverse-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+  .card-back-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 1rem 1rem 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    font-size: 0.8rem;
+  }
+  .coin-card .card-back-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(37, 99, 235, 0.95) 10%,
+      rgba(37, 99, 235, 0) 100%
+    );
+  }
+  .coin-card.owned-coin .card-back-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(16, 185, 129, 0.95) 10%,
+      rgba(16, 185, 129, 0) 100%
+    ) !important;
+  }
+  .coin-card:hover .card-back-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .card-badge {
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .badge-rare {
+    left: 10px;
+    background: rgba(254, 243, 199, 0.95);
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+  .badge-denom {
+    right: 10px;
+    background: rgba(255, 255, 255, 0.75);
+    color: #4b5563;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* =========================================
+             7. MODAL
+             ========================================= */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .modal-content {
+    background: white;
+    border-radius: var(--radius);
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s;
+    box-shadow: var(--shadow-lg);
+  }
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+  .modal-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 600px;
+  }
+  .modal-owned-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--owned-green-light);
+    color: var(--owned-green-dark);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover {
+    background: var(--border-light);
+    color: var(--text);
+  }
+  .modal-body {
+    padding: 1.5rem;
+  }
+  .coin-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .coin-image-modal {
+    text-align: center;
+  }
+  .coin-image-modal h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .modal-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background: var(--border-light);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  .coin-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  .coin-details-grid.three-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .detail-group {
+    background: var(--border-light);
+    padding: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    min-width: 0;
+  }
+  .detail-group h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .detail-item {
+    margin-bottom: 0.85rem;
+    font-size: 0.8rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+    min-width: 0;
+  }
+  .detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .detail-item strong {
+    font-weight: 600;
+    color: var(--text);
+    flex: 0 0 95px;
+  }
+  .detail-value {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+  .series-range {
+    font-size: 0.85em;
+    color: var(--text-light);
+    margin-left: 0.25rem;
+  }
+  .modal-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: color 0.2s;
+  }
+  .modal-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  .badge-true {
+    background-color: var(--owned-green-light);
+    color: var(--owned-green-dark);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge-false {
+    background-color: var(--border-light);
+    color: var(--text-light);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+  }
+  .price-tag {
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  /* =========================================
+             8. FOOTER
+             ========================================= */
+  .app-footer {
+    padding: 1.5rem;
+    text-align: center;
+    background: white;
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+    font-size: 0.875rem;
+    margin-top: auto;
+  }
+  
+  /* =========================================
+             9. RESPONSIVE UTILITIES
+             ========================================= */
+  @media (max-width: 850px) {
+    .coin-details-grid.three-col {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .app-header {
+      padding: 1rem 0;
+    }
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .filter-input-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .filter-group {
+      min-width: 100%;
+    }
+    .filter-status-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+    .view-toggles {
+      align-self: flex-start;
+    }
+    .coin-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    .coin-images {
+      grid-template-columns: 1fr;
+    }
+    .active-filters-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .active-filters-label {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      width: 100%;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0;
+    }
+    .clear-all-tags {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  }
+  @media (max-width: 480px) {
+    .coin-grid {
+      grid-template-columns: 1fr;
+    }
+    .header-stats {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* =========================================
+           10. VIRTUALIZATION & SKELETONS
+           ========================================= */
+  
+  /* The row container created by the virtualizer */
+  .virtual-row {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+  }
+  
+  .virtual-row .coin-card {
+    flex: 1;
+    max-width: 100%;
+    min-width: 0;
+  }
+  
+  .virtual-spacer {
+    flex: 1;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .virtual-row-container {
+    cursor: pointer;
+  }
+  .virtual-row-container:hover {
+    background-color: rgb(255, 255, 255) !important;
+  }
+  
+  /* --- SKELETON ANIMATIONS --- */
+  .skeleton-card {
+    pointer-events: none;
+    min-height: 350px;
+  }
+  
+  .skeleton-pulse {
+    background: #e2e8f0;
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  .skeleton-title {
+    height: 24px;
+    width: 70%;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
+  
+  .skeleton-line {
+    height: 16px;
+    width: 40%;
+    border-radius: 4px;
+  }
+  
+  .skeleton-subject {
+    height: 32px;
+    width: 90%;
+    margin-top: auto;
+    border-radius: 4px;
+  }
+  
+  /* =========================================
+           13. COIN TABLE VIEW
+           ========================================= */
+  .coin-table-wrapper {
+    margin-bottom: 1.5rem;
+  }
+  .coin-table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .coin-matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    font-size: 0.8rem;
+  }
+  .coin-matrix-table th {
+    background: #f8fafc;
+    color: var(--text-light);
+    font-weight: 700;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border-light);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .sticky-col-left {
+    position: sticky;
+    left: 0;
+    background: #f8fafc;
+    z-index: 6;
+    border-right: 2px solid var(--border);
+    color: var(--text);
+    min-width: 60px;
+  }
+  .year-cell {
+    background: #f8fafc;
+    font-weight: 700;
+    color: var(--text);
+    font-family: monospace;
+  }
+  .coin-matrix-table td {
+    padding: 0;
+    border-bottom: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
+    text-align: center;
+    vertical-align: middle;
+    height: 50px;
+  }
+  .matrix-cell.owned-cell {
+    background-color: #f0fdf4;
+  }
+  .matrix-cell.mixed-cell {
+    background-color: #fffbeb;
+  }
+  .matrix-cell.unowned-cell:hover,
+  .matrix-cell.owned-cell:hover,
+  .matrix-cell.mixed-cell:hover {
+    filter: brightness(0.97);
+  }
+  .multi-coin-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+    min-height: 50px;
+  }
+  .coin-item-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-width: 40px;
+    border: 1px solid transparent;
+  }
+  .coin-item-wrapper.series-highlight {
+    background-color: #fef9c3;
+    border: 1px solid #facc15;
+    z-index: 2;
+  }
+  .coin-item-wrapper.dimmed {
+    opacity: 0.3;
+  }
+  .coin-item-wrapper:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .coin-item-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .coin-item-wrapper.owned .coin-item-content {
+    color: var(--owned-green);
+  }
+  .coin-item-wrapper.unowned .coin-item-content {
+    color: #cbd5e1;
+  }
+  .coin-separator {
+    position: absolute;
+    left: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .cell-denom-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: none;
+    color: var(--text-light);
+    line-height: 1;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .coin-item-wrapper.owned .cell-denom-label {
+    color: var(--owned-green-dark);
+  }
+  .cell-empty {
+    color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 0.5rem;
+  }
+  .coin-hover-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: white;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    pointer-events: none;
+    min-width: 200px;
+    max-width: 250px;
+    animation: fadeIn 0.15s ease-out;
+  }
+  .tooltip-header {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+  .tooltip-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .tooltip-series {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+  .tooltip-images {
+    display: flex;
+    gap: 0.5rem;
+    height: 80px;
+  }
+  .tooltip-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    background: #f1f5f9;
+  }
+  .tooltip-placeholder {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+  }
+  
+  /* =========================================
+           15. UNIFIED HEADER STYLES
+           ========================================= */
+  .period-row {
+    transition: background-color 0.1s;
+  }
+  .period-row:hover {
+    background-color: #f8fafc !important;
+  }
+  .period-chevron {
+    color: var(--text-light);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+  .period-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #475569;
+    margin: 0;
+    padding-left: 0.75rem;
+    /* Font: Cinzel (Period Titles) */
+    font-family: var(--font-cinzel), serif;
+  }
+  
+  /* =========================================
+         16. LIST VIEW
+         ========================================= */
+  .coin-list-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .coin-list-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .coin-list-item.owned {
+    background: linear-gradient(to right, #ffffff, #f0fdf4);
+    border-left: 4px solid var(--owned-green);
+  }
+  .list-images-container {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .list-img-wrapper {
+    width: 70px;
+    height: 70px;
+    background: var(--border-light);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .list-item-placeholder {
+    font-size: 0.6rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+  }
+  .list-badge-rare {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(217, 119, 6, 0.9);
+    color: white;
+    font-size: 0.5rem;
+    text-align: center;
+    font-weight: 700;
+    padding: 1px 0;
+  }
+  .list-item-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .list-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .list-item-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .list-item-denom {
+    font-size: 0.75rem;
+    background: var(--border-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+  .list-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-light);
+  }
+  .meta-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+  }
+  .list-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    min-width: 80px;
+    padding-right: 0.5rem;
+  }
+  .list-owned-status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--owned-green);
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  .list-price {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+  }
+  .list-price svg {
+    color: var(--brand-gold);
+    width: 14px;
+    margin-right: 2px;
+  }
+  
+  @media (max-width: 600px) {
+    .mobile-hidden {
+      display: none;
+    }
+    .list-img-wrapper {
+      width: 50px;
+      height: 50px;
+    }
+  }
+  
+  /* =========================================
+             17. LOGIN PAGE STYLES
+             ========================================= */
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-bg);
+    padding: 1.5rem;
+  }
+  
+  .login-card {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-xl);
+    padding: 2.5rem;
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .login-title {
+    font-family: var(--font-cinzel), serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-cinzel), serif;
+  }
+  
+  /* Customizing the existing search-input class for login */
+  .login-card .search-input {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .login-btn {
+    justify-content: center;
+    padding: 0.85rem;
+    margin-top: 0.5rem;
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-size: 1rem;
+  }
+  
+  .login-btn:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  
+  .login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .login-error {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .login-footer {
+    margin-top: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border-light);
+    padding-top: 1.5rem;
+  }
+  
+  .back-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .back-link:hover {
+    color: var(--primary);
+  }
+  
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
