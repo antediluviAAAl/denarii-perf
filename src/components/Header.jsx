@@ -22,8 +22,8 @@ export default function Header({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/logo.svg"
-                width="48"
-                height="48"
+                width="100"
+                height="100"
                 alt="Logo"
                 style={{ display: "block" }}
               />
