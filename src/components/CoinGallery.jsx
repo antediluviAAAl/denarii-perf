@@ -6,7 +6,7 @@ import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useWindowSize } from "../hooks/useWindowSize";
 import CoinCard from "./CoinCard";
 import CoinTable from "./CoinTable";
-import CoinListItem from "./CoinListItem"; // NEW IMPORT
+import CoinListItem from "./CoinListItem";
 
 const CATEGORY_COLORS = [
   { bg: "#fef3c7", border: "#f59e0b", text: "#92400e" },
@@ -31,7 +31,8 @@ const PeriodHeader = ({
         display: "flex",
         alignItems: "center",
         width: "100%",
-        height: "100%",
+        minHeight: "100%", // Changed from fixed height
+        padding: "0.75rem 0", // Add padding for wrap safety
         userSelect: "none",
       }}
     >
@@ -40,6 +41,7 @@ const PeriodHeader = ({
         style={{
           marginRight: "0.5rem",
           transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+          flexShrink: 0,
         }}
       >
         <ChevronDown size={18} />
@@ -54,6 +56,10 @@ const PeriodHeader = ({
           margin: 0,
           borderLeft: `4px solid ${borderColor}`,
           paddingLeft: "0.75rem",
+          // Allow text wrapping
+          whiteSpace: "normal",
+          overflow: "visible",
+          lineHeight: "1.3",
         }}
       >
         {title}
@@ -64,11 +70,18 @@ const PeriodHeader = ({
         style={{
           fontSize: "0.85rem",
           background: "#f1f5f9",
-          marginLeft: "1rem",
+          marginLeft: "auto", // Push to right
+          padding: "0.25rem 0.5rem",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
         }}
       >
         <span className="text-gold">{count} coins</span>
-        <span className="owned-in-category">• {ownedCount} owned</span>
+        {ownedCount > 0 && (
+           <span className="owned-in-category mobile-hidden">
+             • {ownedCount} owned
+           </span>
+        )}
       </span>
     </div>
   );
@@ -87,20 +100,23 @@ export default function CoinGallery({
   const parentRef = useRef(null);
   const [offsetTop, setOffsetTop] = useState(0);
 
+  // Recalculate offset when width OR content above changes (like filters)
   useEffect(() => {
-    if (parentRef.current) setOffsetTop(parentRef.current.offsetTop);
-  }, [width]);
+    if (parentRef.current) {
+      setOffsetTop(parentRef.current.offsetTop);
+    }
+  }, [width, coins.length, viewMode]);
 
   // --- GRID & LIST LOGIC ---
   const columns = useMemo(() => {
-    if (viewMode === "list") return 1; // Force single column for List View
+    if (viewMode === "list") return 1;
     if (width < 650) return 1;
     if (width < 950) return 2;
     if (width < 1300) return 3;
     return 4;
   }, [width, viewMode]);
 
-  // --- GROUPING LOGIC (Fixed Categories) ---
+  // --- GROUPING LOGIC ---
   const groupedCoins = useMemo(() => {
     const groupsMap = {};
     categories.forEach((cat, index) => {
@@ -225,7 +241,7 @@ export default function CoinGallery({
     return sortedPeriods;
   };
 
-  // --- VIRTUALIZER (GRID & LIST) ---
+  // --- VIRTUALIZER PREP ---
   const virtualRows = useMemo(() => {
     if (loading || viewMode === "table") return [];
     const rows = [];
@@ -234,7 +250,6 @@ export default function CoinGallery({
       rows.push({ type: "header", group });
 
       if (expandedCategories[group.id]) {
-        // GRID/LIST MODE: Pass false to use "Bubble Up" sorting (respects price sort)
         const periodGroups = getCoinsByPeriod(group.coins, false);
 
         periodGroups.forEach((period, pIndex) => {
@@ -289,16 +304,22 @@ export default function CoinGallery({
     count: virtualRows.length,
     estimateSize: (index) => {
       const row = virtualRows[index];
-      if (row.type === "header") return 94;
-      if (row.type === "subheader") return 50;
-      // List = 100px (Shorter), Grid = 380px
-      return viewMode === "list" ? 100 : 380;
+      // Accurate Initial Estimates are crucial
+      if (row.type === "header") return 70; // Matching min-height
+      if (row.type === "subheader") return 50; 
+      
+      if (viewMode === "list") {
+        // Estimate 95px for mobile list items (Slightly larger than before to prevent shift)
+        return width < 768 ? 95 : 100;
+      }
+      return 380; // Grid
     },
     overscan: 5,
     scrollMargin: offsetTop,
   });
 
   const handleRowBackgroundClick = (e, groupId) => {
+    // Only toggle if clicking the background, not the content
     if (
       e.target === e.currentTarget ||
       e.target.classList.contains("virtual-row") ||
@@ -327,10 +348,12 @@ export default function CoinGallery({
     <div
       ref={parentRef}
       className="categories-container"
-      style={{ paddingBottom: "2rem" }}
+      // KEY PROP: Forces full re-render on view switch, clearing old height cache
+      key={viewMode}
+      style={{ paddingBottom: "2rem", width: "100%" }}
     >
       {viewMode === "table" ? (
-        /* --- TABLE MODE --- */
+        /* --- TABLE MODE (No Changes) --- */
         <div className="tables-layout">
           {groupedCoins.map((group) => {
             const catOwnedCount = group.coins.filter((c) => c.is_owned).length;
@@ -359,7 +382,8 @@ export default function CoinGallery({
                       ? "none"
                       : `1px solid ${group.color.border}`,
                     borderRadius: isCategoryExpanded ? "12px 12px 0 0" : "12px",
-                    height: "70px",
+                    height: "auto", // Allow wrapping
+                    minHeight: "70px",
                     boxSizing: "border-box",
                     marginBottom: "0",
                   }}
@@ -487,12 +511,14 @@ export default function CoinGallery({
             return (
               <div
                 key={virtualItem.key}
+                data-index={virtualItem.index}
+                // DYNAMIC MEASUREMENT: This is the fix for overlaps/gaps
+                ref={rowVirtualizer.measureElement} 
                 style={{
                   position: "absolute",
                   top: 0,
                   left: 0,
                   width: "100%",
-                  height: `${virtualItem.size}px`,
                   transform: `translateY(${
                     virtualItem.start - rowVirtualizer.options.scrollMargin
                   }px)`,
@@ -515,14 +541,17 @@ export default function CoinGallery({
                       borderRadius: expandedCategories[row.group.id]
                         ? "12px 12px 0 0"
                         : "12px",
-                      height: "70px",
+                      minHeight: "70px", // Allow growth
+                      height: "auto",
                       boxSizing: "border-box",
+                      zIndex: 2, // Ensure headers sit above content rows during scroll overlap
+                      position: "relative",
                     }}
                   >
                     <div
                       className="category-header"
                       onClick={() => toggleCategory(row.group.id)}
-                      style={{ borderBottom: "none" }}
+                      style={{ borderBottom: "none", height: "auto", minHeight: "70px" }}
                     >
                       <div className="category-title">
                         <h2
@@ -535,7 +564,7 @@ export default function CoinGallery({
                           <span className="text-gold">
                             {row.group.coins.length} coins
                           </span>
-                          <span className="owned-in-category">
+                          <span className="owned-in-category mobile-hidden">
                             • {row.group.coins.filter((c) => c.is_owned).length}{" "}
                             owned
                           </span>
@@ -568,11 +597,14 @@ export default function CoinGallery({
                         ? `1px solid ${borderColor}`
                         : "none",
                       borderRadius: row.isLastInGroup ? "0 0 12px 12px" : "0",
-                      height: "100%",
+                      minHeight: "50px", // Allow growth
+                      height: "auto", 
                       display: "flex",
                       alignItems: "center",
                       boxSizing: "border-box",
                       cursor: "pointer",
+                      position: "relative",
+                      zIndex: 1
                     }}
                   >
                     <PeriodHeader
@@ -584,14 +616,14 @@ export default function CoinGallery({
                     />
                   </div>
                 ) : (
-                  /* 3. COIN ROW (RENDER LIST OR CARD) */
+                  /* 3. COIN ROW */
                   <div
                     className="period-row virtual-row-container"
                     onClick={(e) => handleRowBackgroundClick(e, row.groupId)}
                     title="Click background to collapse category"
                     style={{
                       backgroundColor: "rgb(255,255,255)",
-                      padding: "0 1.5rem",
+                      padding: "0rem 1.5rem",
                       borderLeft: `1px solid ${borderColor}`,
                       borderRight: `1px solid ${borderColor}`,
                       borderBottom: row.isLast
@@ -599,11 +631,14 @@ export default function CoinGallery({
                         : "none",
                       borderTop: "none",
                       borderRadius: row.isLast ? "0 0 12px 12px" : "0",
-                      height: "100%",
+                      minHeight: "80px", // Base height
+                      height: "auto",
                       display: "flex",
                       alignItems: "center",
                       boxSizing: "border-box",
                       cursor: "pointer",
+                      position: "relative",
+                      zIndex: 0
                     }}
                   >
                     <div className="virtual-row">

@@ -15,11 +15,12 @@ const EXPLORE_DISTRIBUTION = [
   { typeId: 6, target: 10 }, // Notgelds (Probes)
 ];
 
+// UPDATED: Added denomination_shorthand
 const SELECT_COINS_FIELDS = `
   coin_id, name, year, price_usd, km, subject, 
   type_id, period_id, denomination_id, series_id,
   marked, 
-  d_denominations(denomination_name),
+  d_denominations(denomination_name, denomination_shorthand),
   d_period(period_name, period_start_year, period_link),
   d_series(series_name, series_range, series_link)
 `;

@@ -4,11 +4,9 @@ import React, { useMemo, useState, memo } from "react";
 import { Check, X, Minus } from "lucide-react";
 
 // --- MEMOIZED MATRIX COMPONENT ---
-// This component only re-renders when the DATA changes,
-// not when the tooltip hovers over it.
 const CoinMatrix = memo(function CoinMatrix({
   years,
-  denominations,
+  denominations, // Now array of objects { name, shorthand }
   matrix,
   hoverState,
   onCoinClick,
@@ -22,7 +20,13 @@ const CoinMatrix = memo(function CoinMatrix({
         <tr>
           <th className="sticky-col-left">Year</th>
           {denominations.map((d) => (
-            <th key={d}>{d}</th>
+            <th key={d.name}>
+              {/* Header Logic: Name on Desktop, Shorthand on Mobile */}
+              <span className="denom-label-desktop">{d.name}</span>
+              <span className="denom-label-mobile">
+                {d.shorthand || d.name}
+              </span>
+            </th>
           ))}
         </tr>
       </thead>
@@ -33,14 +37,18 @@ const CoinMatrix = memo(function CoinMatrix({
               {year > 0 ? year : "ND"}
             </td>
 
-            {denominations.map((denom) => {
-              const cellCoins = matrix[`${year}-${denom}`];
+            {denominations.map((d) => {
+              const denomName = d.name;
+              const cellCoins = matrix[`${year}-${denomName}`];
               const hasCoins = cellCoins && cellCoins.length > 0;
               const isMixed =
                 hasCoins &&
                 cellCoins.some((c) => c.is_owned) &&
                 cellCoins.some((c) => !c.is_owned);
               const allOwned = hasCoins && cellCoins.every((c) => c.is_owned);
+
+              // Determine if we have multiple coins in this specific cell
+              const isMultiCoin = hasCoins && cellCoins.length > 1;
 
               let cellClass = "empty";
               if (allOwned) cellClass = "owned-cell";
@@ -49,7 +57,7 @@ const CoinMatrix = memo(function CoinMatrix({
 
               return (
                 <td
-                  key={`${year}-${denom}`}
+                  key={`${year}-${denomName}`}
                   className={`matrix-cell ${cellClass}`}
                 >
                   {hasCoins ? (
@@ -61,6 +69,27 @@ const CoinMatrix = memo(function CoinMatrix({
 
                         const isDimmed =
                           hoverState.seriesId && !isSeriesHighlighted;
+
+                        // LABEL LOGIC:
+                        // 1. If multiple coins: ALWAYS show subject (truncated) to distinguish
+                        // 2. If single coin:
+                        //    - Desktop: Show Denomination Name
+                        //    - Mobile: Show Denomination Shorthand
+                        
+                        let labelDesktop, labelMobile;
+
+                        if (isMultiCoin) {
+                          // Case: Stack of coins -> Show Subject
+                          const subj = coin.subject
+                            ? coin.subject.substring(0, 8)
+                            : denomName;
+                          labelDesktop = subj;
+                          labelMobile = subj;
+                        } else {
+                          // Case: Single coin -> Show Denomination
+                          labelDesktop = denomName;
+                          labelMobile = d.shorthand || denomName;
+                        }
 
                         return (
                           <div
@@ -78,16 +107,17 @@ const CoinMatrix = memo(function CoinMatrix({
                             onMouseMove={onMouseMove}
                             onMouseLeave={onMouseLeave}
                           >
-                            {index > 0 && (
-                              <div className="coin-separator"></div>
-                            )}
-
                             <div className="coin-item-content">
-                              <span className="cell-denom-label">
-                                {coin.subject
-                                  ? coin.subject.substring(0, 8)
-                                  : denom}
+                              {/* Desktop Label */}
+                              <span className="cell-denom-label denom-label-desktop">
+                                {labelDesktop}
                               </span>
+
+                              {/* Mobile Label */}
+                              <span className="cell-denom-label denom-label-mobile">
+                                {labelMobile}
+                              </span>
+
                               {coin.is_owned ? (
                                 <Check size={16} strokeWidth={3} />
                               ) : (
@@ -125,17 +155,21 @@ export default function CoinTable({ coins, onCoinClick }) {
   // --- DATA PIVOT ---
   const { years, denominations, matrix } = useMemo(() => {
     const yearsSet = new Set();
-    const denomsSet = new Set();
+    const denomMap = new Map(); // Store objects { name, shorthand }
     const lookup = {};
 
     coins.forEach((coin) => {
       const y = coin.year || 0;
-      const d = coin.d_denominations?.denomination_name || "Unknown";
+      const dName = coin.d_denominations?.denomination_name || "Unknown";
+      const dShort = coin.d_denominations?.denomination_shorthand || "";
 
       yearsSet.add(y);
-      denomsSet.add(d);
+      // Only set if not already present to avoid duplicates
+      if (!denomMap.has(dName)) {
+        denomMap.set(dName, { name: dName, shorthand: dShort });
+      }
 
-      const key = `${y}-${d}`;
+      const key = `${y}-${dName}`;
       if (!lookup[key]) {
         lookup[key] = [];
       }
@@ -152,16 +186,18 @@ export default function CoinTable({ coins, onCoinClick }) {
     });
 
     const sortedYears = Array.from(yearsSet).sort((a, b) => b - a);
-    const sortedDenoms = Array.from(denomsSet).sort((a, b) => {
-      const numA = parseFloat(a) || 0;
-      const numB = parseFloat(b) || 0;
+    
+    // Sort denominations numerically then alphabetically
+    const sortedDenoms = Array.from(denomMap.values()).sort((a, b) => {
+      const numA = parseFloat(a.name) || 0;
+      const numB = parseFloat(b.name) || 0;
       if (numA !== numB) return numA - numB;
-      return a.localeCompare(b);
+      return a.name.localeCompare(b.name);
     });
 
     return {
       years: sortedYears,
-      denominations: sortedDenoms,
+      denominations: sortedDenoms, // Array of objects
       matrix: lookup,
     };
   }, [coins]);
@@ -198,8 +234,6 @@ export default function CoinTable({ coins, onCoinClick }) {
 
   if (coins.length === 0) return null;
 
-  // HELPER: Select tooltip image
-  // Use Thumbnail for speed/table context
   const getTooltipImage = (side) => {
     if (!hoverState.coin) return null;
     return hoverState.coin.images?.[side]?.thumb;
@@ -223,7 +257,6 @@ export default function CoinTable({ coins, onCoinClick }) {
         />
       </div>
 
-      {/* --- FLOATING TOOLTIP --- */}
       {hoverState.coin && (
         <div
           className="coin-hover-tooltip"
